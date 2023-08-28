@@ -1,0 +1,34 @@
+echo 'test
+echo test"
+echo '> test'
+echo "> test"
+echo ee > test > wbou tt
+echo $USE
+echo '$USER'
+echo "$USER"
+echo ta $USER ta
+echo ta$USERta
+echo ta$USER ta
+echo test $USER test $USER test
+echo $ USER
+echo tttt >    fileTest
+echo < test 12345
+ec"ho" bon"'j'o'u"r
+echo "'$USER'"
+<test rev
+< test rev | cat -e
+< test cat -e | rev
+echo test <sorti jjk | tet | "oui"'non'|<entree $USER et "$USER" et '$USER' >fin
+cat >oui>non
+cat <oui>non
+echo "test" <oui>mom test h <oui i>mom j
+echo     123     |       | rev
+
+
+Commande de chien :
+echo ee > test > wbou tt
+echo 123 <> test
+| echo test
+echo et >>>oui
+cat  <<     oui>test
+
