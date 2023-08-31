@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
 char	*check_path(s_g *s_g, char *cmd)
 {
@@ -110,7 +110,7 @@ char	*clone_input_without_option(char *input, char *input_without_option) //clon
 	int	i;
 
 	i = 0;
-	//input_without_option = malloc(sizeof(char) * (ft_strlen(input) + 1));
+	input_without_option = malloc(sizeof(char) * ft_strlen(input));
 	while (input[i] != ' ' && input[i])
 	{
 		input_without_option[i] = input[i];
