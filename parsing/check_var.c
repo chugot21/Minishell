@@ -1,40 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   check_var.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fderly <fderly@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/20 11:40:26 by chugot            #+#    #+#             */
-/*   Updated: 2023/09/19 22:22:16 by fderly           ###   ########.fr       */
+/*   Updated: 2023/09/19 23:00:50 by fderly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	parsing(t_g *t_g, t_lst *t_lst)
+int	check_var(t_g *t_g, int i)
 {
-	if (quote_check(t_g->input) == 0)
+	int	j;
+
+	t_g->path_var_tempo = gc_malloc (&t_g->gc, sizeof(char) * 9999);
+	i++;
+	j = 0;
+	while (t_g->input[i + j] != 0 && t_g->input[i + j] != ' '
+		&& t_g->input[i + j] != '"' && t_g->input[i + j] != '|')
 	{
-		t_g->exit_ret = 2;
-		printf("!!! Error quote\n");
-		return (0);
+		t_g->path_var_tempo[j] = t_g->input[i + j];
+		j++;
 	}
-	if (var_env_chang(t_g) == 0)
+	t_g->path_var_tempo[j] = 0;
+	i = 0;
+	while (t_g->mini_env[i])
 	{
-		printf("Variable Env inexistante\n");
-		return (0);
+		if ((ft_strnstr(t_g->mini_env[i], t_g->path_var_tempo,
+					ft_strlen(t_g->path_var_tempo)) != NULL)
+			&& t_g->mini_env[i][ft_strlen(t_g->path_var_tempo)] == '=')
+			break ;
+		i++;
 	}
-	if (check_pipe_at_start(t_g) == 0)
-		return (0);
-	add_list_exec(t_g, t_lst);
-	if (check_empty_prompt(t_lst) == 0)
-	{
-		t_g->exit_ret = 127;
-		printf("cmd <input >output | <repeat>\n");
-		return (0);
-	}
-	if (check_files_exist(t_lst, t_g) == 0)
+	if (t_g->mini_env[i] == 0)
 		return (0);
 	return (1);
 }

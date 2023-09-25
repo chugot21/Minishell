@@ -6,99 +6,99 @@
 /*   By: fderly <fderly@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/20 11:40:26 by chugot            #+#    #+#             */
-/*   Updated: 2023/08/27 02:17:21 by fderly           ###   ########.fr       */
+/*   Updated: 2023/09/19 23:02:16 by fderly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	add_var(s_g *s_g, int i)
+int	add_var_interro(t_g *t_g, int i)
+{
+	char	*var_interro;
+	int		k;
+
+	k = 0;
+	var_interro = ft_itoa(t_g->exit_ret);
+	while (var_interro[k])
+	{
+		t_g->i2[i + k] = var_interro[k];
+		k++;
+	}
+	t_g->i2[i + k] = 0;
+	free(var_interro);
+	return (k);
+}
+
+int	add_var(t_g *t_g, int i)
 {
 	int	j;
 	int	k;
 
 	j = 0;
-	while (s_g->miniEnv[j])
+	while (t_g->mini_env[j])
 	{
-		if (ft_strnstr(s_g->miniEnv[j], s_g->pathVarTempo,
-				ft_strlen(s_g->pathVarTempo)) != NULL)
+		if (ft_strnstr(t_g->mini_env[j], t_g->path_var_tempo,
+				ft_strlen(t_g->path_var_tempo)) != NULL)
 			break ;
 		j++;
 	}
 	k = 0;
-	while (s_g->miniEnv[j][ft_strlen(s_g->pathVarTempo) + k + 1] != ' '
-		&& s_g->miniEnv[j][ft_strlen(s_g->pathVarTempo) + k + 1] != 0)
+	while (t_g->mini_env[j][ft_strlen(t_g->path_var_tempo) + k + 1] != ' '
+		&& t_g->mini_env[j][ft_strlen(t_g->path_var_tempo) + k + 1] != 0)
 	{
-		s_g->i2[i + k] = s_g->miniEnv[j]
-		[ft_strlen(s_g->pathVarTempo) + k + 1];
+		t_g->i2[i + k] = t_g->mini_env[j]
+		[ft_strlen(t_g->path_var_tempo) + k + 1];
 		k++;
 	}
-	s_g->i2[i + k] = 0;
+	t_g->i2[i + k] = 0;
 	return (k);
 }
 
-int	check_var(s_g *s_g, int i)
+void	quote_var_env(t_g *t_g, int *i, int *j)
 {
-	int	j;
+	t_g->i2[(*j)++] = t_g->input[(*i)++];
+	while (t_g->input[(*i)] != '\'')
+		t_g->i2[(*j)++] = t_g->input[(*i)++];
+	t_g->i2[(*j)++] = t_g->input[(*i)++];
+}
 
-	s_g->pathVarTempo = gc_malloc (&s_g->gc, sizeof(char) * 9999);
-	if (!s_g->pathVarTempo)
-		return (0);
-	i++;
-	j = 0;
-	while (s_g->input[i + j] != 0 && s_g->input[i + j] != ' ')
+int	var_env_chang2(t_g *t_g, int *i, int *j)
+{
+	if (t_g->input[*(i) + 1] == '?')
 	{
-		s_g->pathVarTempo[j] = s_g->input[i + j];
-		j++;
+		*(j) += add_var_interro(t_g, *(j));
+		*(i) += 2;
 	}
-	s_g->pathVarTempo[j] = 0;
-	i = 0;
-	while (s_g->miniEnv[i])
+	else if (check_var(t_g, *(i)) != 0)
 	{
-		if ((ft_strnstr(s_g->miniEnv[i], s_g->pathVarTempo,
-					ft_strlen(s_g->pathVarTempo)) != NULL)
-			&& s_g->miniEnv[i][ft_strlen(s_g->pathVarTempo)] == '=')
-			break ;
-		i++;
+		*(j) += add_var(t_g, *(j));
+		*(i) += ft_strlen(t_g->path_var_tempo) + 1;
 	}
-	if (s_g->miniEnv[i] == 0)
+	else
 		return (0);
 	return (1);
 }
 
-void	quote_var_env(s_g *s_g, int *i, int *j)
-{
-	s_g->i2[(*j)++] = s_g->input[(*i)++];
-	while (s_g->input[(*i)] != '\'')
-		s_g->i2[(*j)++] = s_g->input[(*i)++];
-	s_g->i2[(*j)++] = s_g->input[(*i)++];
-}
-
-int	var_env_chang(s_g *s_g)
+int	var_env_chang(t_g *t_g)
 {
 	int	i;
 	int	j;
 
 	i = 0;
 	j = 0;
-	s_g->i2 = gc_malloc (&s_g->gc, sizeof(char) * 99999);
-	while (s_g->input[i])
+	t_g->i2 = gc_malloc (&t_g->gc, sizeof(char) * 99999);
+	while (t_g->input[i])
 	{
-		if (s_g->input[i] == '\'')
-			quote_var_env(s_g, &i, &j);
-		else if (s_g->input[i] == '$' && s_g->input[i + 1] != ' ')
+		if (t_g->input[i] == '\'')
+			quote_var_env(t_g, &i, &j);
+		else if (t_g->input[i] == '$' && t_g->input[i + 1] != ' ')
 		{
-			if (check_var(s_g, i) != 0)
-			{
-				j += add_var(s_g, j);
-				i += ft_strlen(s_g->pathVarTempo) + 1;
-			}
-			else
+			if (var_env_chang2(t_g, &i, &j) == 0)
 				return (0);
 		}
 		else
-			s_g->i2[j++] = s_g->input[i++];
+			t_g->i2[j++] = t_g->input[i++];
 	}
-	s_g->i2[j] = '\0';
+	t_g->i2[j] = '\0';
 	return (1);
 }

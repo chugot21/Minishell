@@ -6,7 +6,7 @@
 #    By: fderly <fderly@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/17 12:00:49 by chugot            #+#    #+#              #
-#    Updated: 2023/08/27 02:51:54 by fderly           ###   ########.fr        #
+#    Updated: 2023/09/20 16:43:41 by fderly           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@ NAME =	minishell
 
 SRCS =	minishell.c \
 		minishell2.c \
+		signal.c \
 		ft_utils/ft_split.c \
 		ft_utils/ft_strjoin.c \
 		ft_utils/ft_strnstr.c \
@@ -24,10 +25,21 @@ SRCS =	minishell.c \
 		ft_utils/ft_strncmp.c \
 		ft_utils/ft_putstr_fd.c \
 		ft_utils/ft_putendl_fd.c \
+		ft_utils/ft_atoi.c \
+		ft_utils/ft_itoa.c \
 		builtins/builtin_base.c \
-		Exec/exec_test1.c \
+		builtins/cd.c \
+		builtins/echo.c \
+		builtins/env.c \
+		builtins/exit.c \
+		builtins/export.c \
+		builtins/pwd.c \
+		builtins/unset.c \
+		Exec/exec_main.c \
+		Exec/exec_main_2.c \
 		Exec/pipex_free.c \
 		Exec/execve_cmd.c \
+		Exec/exec_redirections.c \
 		parsing/parsing.c \
 		parsing/quoteCheck.c \
 		parsing/varEnvChang.c \
@@ -36,6 +48,7 @@ SRCS =	minishell.c \
 		parsing/add_list_exec.c \
 		parsing/put_sorti.c \
 		parsing/put_entry.c \
+		parsing/check_var.c \
 		listeExecution.c \
 
 LIBGCDIR = gc
@@ -44,7 +57,7 @@ LIBGCFLAGS = -L $(LIBGCDIR) -l:$(LIBGC)
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror -lreadline -lhistory
+CFLAGS = -Wall -Wextra -Werror -lreadline -lhistory -g3
 
 OBJS = $(SRCS:.c=.o)
 
